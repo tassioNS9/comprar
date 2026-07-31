@@ -1,10 +1,11 @@
-import { View, Image } from "react-native";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import styles from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 export default function Home() {
+  const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo} />
@@ -18,7 +19,20 @@ export default function Home() {
       </View>
 
       <View style={styles.content}>
-        <Filter status={FilterStatus.DONE} isActive onPress={() => {}} />
+        <View style={styles.header}>
+          {FILTER_STATUS.map((status) => (
+            <Filter
+              key={status}
+              status={status}
+              isActive={status === FilterStatus.DONE}
+              onPress={() => {}}
+            />
+          ))}
+
+          <TouchableOpacity style={styles.clearButton} onPress={() => {}}>
+            <Text style={styles.clearText}>Limpar lista</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
