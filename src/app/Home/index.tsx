@@ -4,7 +4,9 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
-export default function Home() {
+import { Item } from "@/components/Item";
+
+export function Home() {
   const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
   return (
     <View style={styles.container}>
@@ -33,6 +35,12 @@ export default function Home() {
             <Text style={styles.clearText}>Limpar lista</Text>
           </TouchableOpacity>
         </View>
+
+        <Item
+          onRemove={() => console.log("Item removido")}
+          onStatusChange={() => console.log("Status alterado")}
+          data={{ description: "Exemplo de item", status: FilterStatus.DONE }}
+        />
       </View>
     </View>
   );
