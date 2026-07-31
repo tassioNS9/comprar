@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, Text } from "react-native";
+import { View, Image, TouchableOpacity, Text, FlatList } from "react-native";
 import styles from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -8,6 +8,33 @@ import { Item } from "@/components/Item";
 
 export function Home() {
   const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
+  const ITEMS = [
+    {
+      id: "1",
+      description: "Exemplo de item",
+      status: FilterStatus.DONE,
+    },
+    {
+      id: "2",
+      description: "Exemplo de item 2",
+      status: FilterStatus.PENDING,
+    },
+    {
+      id: "3",
+      description: "Exemplo de item 3",
+      status: FilterStatus.DONE,
+    },
+    {
+      id: "4",
+      description: "Exemplo de item 4",
+      status: FilterStatus.PENDING,
+    },
+    {
+      id: "5",
+      description: "Exemplo de item 5",
+      status: FilterStatus.DONE,
+    },
+  ];
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo} />
@@ -36,10 +63,22 @@ export function Home() {
           </TouchableOpacity>
         </View>
 
-        <Item
-          onRemove={() => console.log("Item removido")}
-          onStatusChange={() => console.log("Status alterado")}
-          data={{ description: "Exemplo de item", status: FilterStatus.DONE }}
+        <FlatList
+          data={ITEMS}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Item
+              onRemove={() => console.log("Item removido")}
+              onStatusChange={() => console.log("Status alterado")}
+              data={item}
+            />
+          )}
+          showsVerticalScrollIndicator={true}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyListText}>Nenhum item encontrado</Text>
+          )}
         />
       </View>
     </View>
