@@ -7,6 +7,11 @@ type InputProps = TextInputProps & {
 
 export function Input({ onChangeText, ...rest }: InputProps) {
   return (
-    <TextInput style={styles.container} onChangeText={onChangeText} {...rest} />
+    <TextInput
+      style={styles.container}
+      placeholderTextColor="#74798B"
+      onChangeText={onChangeText}
+      {...rest}
+    />
   );
 }
