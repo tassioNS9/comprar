@@ -25,7 +25,7 @@ export function Home() {
 
   async function loadItems() {
     try {
-      const response = await itemsStorage.getItems();
+      const response = await itemsStorage.getByStatus(filterStatus);
       setItems(response);
     } catch (error) {
       console.log(error);
@@ -35,9 +35,9 @@ export function Home() {
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [filterStatus]);
 
-  const updateFilterStatus = (status: FilterStatus) => {
+  const updateFilterStatus = async (status: FilterStatus) => {
     setFilterStatus(status);
   };
 
