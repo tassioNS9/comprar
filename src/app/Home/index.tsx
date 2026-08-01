@@ -5,9 +5,9 @@ import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
+import { useState } from "react";
 
 export function Home() {
-  const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
   const ITEMS = [
     {
       id: "1",
@@ -35,6 +35,31 @@ export function Home() {
       status: FilterStatus.DONE,
     },
   ];
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>(
+    FilterStatus.PENDING,
+  );
+  const [description, setDescription] = useState<String>("");
+
+  const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
+  const [items, setItems] = useState<any>(ITEMS);
+
+  const updateFilterStatus = (status: FilterStatus) => {
+    setFilterStatus(status);
+  };
+
+  const addItem = () => {
+    if (description.trim() === "") {
+      return;
+    }
+
+    const newItem = {
+      id: String(Math.random().toString(36).substring(2)),
+      description: description,
+      status: FilterStatus.PENDING,
+    };
+    setItems((prevItems) => [...prevItems, newItem]);
+  };
+
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo} />
@@ -42,9 +67,9 @@ export function Home() {
       <View style={styles.form}>
         <Input
           placeholder="O que você precisa comprar?"
-          onChangeText={() => {}}
+          onChangeText={setDescription}
         />
-        <Button title="Adicionar" onPress={() => {}} />
+        <Button title="Adicionar" onPress={addItem} />
       </View>
 
       <View style={styles.content}>
@@ -53,8 +78,8 @@ export function Home() {
             <Filter
               key={status}
               status={status}
-              isActive={status === FilterStatus.DONE}
-              onPress={() => {}}
+              isActive={status === filterStatus}
+              onPress={() => updateFilterStatus(status)}
             />
           ))}
 
@@ -64,7 +89,7 @@ export function Home() {
         </View>
 
         <FlatList
-          data={ITEMS}
+          data={items}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Item
