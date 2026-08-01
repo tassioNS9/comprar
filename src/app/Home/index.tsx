@@ -5,59 +5,47 @@ import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 export function Home() {
-  const ITEMS = [
-    {
-      id: "1",
-      description: "Exemplo de item",
-      status: FilterStatus.DONE,
-    },
-    {
-      id: "2",
-      description: "Exemplo de item 2",
-      status: FilterStatus.PENDING,
-    },
-    {
-      id: "3",
-      description: "Exemplo de item 3",
-      status: FilterStatus.DONE,
-    },
-    {
-      id: "4",
-      description: "Exemplo de item 4",
-      status: FilterStatus.PENDING,
-    },
-    {
-      id: "5",
-      description: "Exemplo de item 5",
-      status: FilterStatus.DONE,
-    },
-  ];
   const [filterStatus, setFilterStatus] = useState<FilterStatus>(
     FilterStatus.PENDING,
   );
-  const [description, setDescription] = useState<String>("");
+  const [description, setDescription] = useState<string>("");
 
   const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
-  const [items, setItems] = useState<any>(ITEMS);
+  const [items, setItems] = useState<ItemStorage[]>([]);
+
+  async function loadItems() {
+    try {
+      const response = await itemsStorage.getItems();
+      setItems(response);
+    } catch (error) {
+      console.log(error);
+      console.log("Não foi possível carregar os itens");
+    }
+  }
+
+  useEffect(() => {
+    loadItems();
+  }, []);
 
   const updateFilterStatus = (status: FilterStatus) => {
     setFilterStatus(status);
   };
 
-  const addItem = () => {
+  const addItem = async () => {
     if (description.trim() === "") {
       return;
     }
 
-    const newItem = {
+    const newItem: ItemStorage = {
       id: String(Math.random().toString(36).substring(2)),
-      description: description,
       status: FilterStatus.PENDING,
+      description: description,
     };
     setItems((prevItems) => [...prevItems, newItem]);
+    await itemsStorage.addItem(newItem);
   };
 
   return (

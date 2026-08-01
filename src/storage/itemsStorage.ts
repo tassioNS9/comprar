@@ -20,15 +20,29 @@ async function getItems(): Promise<ItemStorage[]> {
 }
 
 async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
+  const items = await getItems();
+  return items.filter((item) => item.status === status);
+}
+
+async function saveItems(items: ItemStorage[]): Promise<void> {
   try {
-    const items = await getItems();
-    return items.filter((item) => item.status === status);
+    await AsyncStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(items));
   } catch (error) {
-    throw new Error("Não foi possível atualizar o status do item");
+    throw new Error("Não foi possível salvar os itens");
   }
 }
 
-export const itemStorage = {
+async function addItem(item: ItemStorage): Promise<ItemStorage[]> {
+  const items = await getItems();
+  items.push(item);
+  await saveItems(items);
+
+  return items;
+}
+
+export const itemsStorage = {
   getItems,
   getByStatus,
+  saveItems,
+  addItem,
 };
