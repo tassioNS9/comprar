@@ -1,4 +1,11 @@
-import { View, Image, TouchableOpacity, Text, FlatList } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  FlatList,
+  Alert,
+} from "react-native";
 import styles from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -34,9 +41,12 @@ export function Home() {
     setFilterStatus(status);
   };
 
-  const addItem = async () => {
-    if (description.trim() === "") {
-      return;
+  const handleAddItem = async () => {
+    if (!description.trim()) {
+      return Alert.alert(
+        "Atenção",
+        "Por favor, insira uma descrição para o item.",
+      );
     }
 
     const newItem: ItemStorage = {
@@ -57,7 +67,7 @@ export function Home() {
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
         />
-        <Button title="Adicionar" onPress={addItem} />
+        <Button title="Adicionar" onPress={handleAddItem} />
       </View>
 
       <View style={styles.content}>
