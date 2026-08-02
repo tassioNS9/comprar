@@ -56,6 +56,41 @@ export function Home() {
     };
     setItems((prevItems) => [...prevItems, newItem]);
     await itemsStorage.addItem(newItem);
+    setFilterStatus(FilterStatus.PENDING);
+    setDescription("");
+    await loadItems();
+    Alert.alert("Sucesso", "Item adicionado com sucesso!");
+  };
+
+  const hadleRemoveItem = async (itemId: string) => {
+    try {
+      await itemsStorage.removeItem(itemId);
+      await loadItems();
+      Alert.alert("Sucesso", "Item removido com sucesso!");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível remover o item.");
+    }
+  };
+
+  const handleClearItems = async () => {
+    Alert.alert("Limpar", "Deseja remover todos?", [
+      { text: "Não", style: "cancel" },
+      {
+        text: "Sim",
+        onPress: () => itemsStorage.clearItems().then(() => loadItems()),
+      },
+    ]);
+  };
+
+  const updateItemStatus = async (itemId: string) => {
+    try {
+      await itemsStorage.updateItemStatus(itemId);
+      await loadItems();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível atualizar o status do item.");
+    }
   };
 
   return (
@@ -66,6 +101,7 @@ export function Home() {
         <Input
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
+          value={description}
         />
         <Button title="Adicionar" onPress={handleAddItem} />
       </View>
@@ -81,7 +117,10 @@ export function Home() {
             />
           ))}
 
-          <TouchableOpacity style={styles.clearButton} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => handleClearItems()}
+          >
             <Text style={styles.clearText}>Limpar lista</Text>
           </TouchableOpacity>
         </View>
@@ -91,8 +130,8 @@ export function Home() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Item
-              onRemove={() => console.log("Item removido")}
-              onStatusChange={() => console.log("Status alterado")}
+              onRemove={() => hadleRemoveItem(item.id)}
+              onStatusChange={() => updateItemStatus(item.id)}
               data={item}
             />
           )}

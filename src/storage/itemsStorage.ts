@@ -40,9 +40,42 @@ async function addItem(item: ItemStorage): Promise<ItemStorage[]> {
   return items;
 }
 
+async function removeItem(itemId: string): Promise<void> {
+  const items = await getItems();
+  const updatedItems = items.filter((item) => item.id !== itemId);
+  await saveItems(updatedItems);
+}
+
+async function clearItems(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(ITEMS_STORAGE_KEY);
+  } catch (error) {
+    throw new Error("Não foi possível limpar os itens");
+  }
+}
+
+async function updateItemStatus(itemId: string): Promise<void> {
+  const items = await getItems();
+  const updatedITems = items.map((item: ItemStorage) =>
+    item.id === itemId
+      ? {
+          ...item,
+          status:
+            item.status === FilterStatus.PENDING
+              ? FilterStatus.DONE
+              : FilterStatus.PENDING,
+        }
+      : item,
+  );
+  await saveItems(updatedITems);
+}
+
 export const itemsStorage = {
   getItems,
   getByStatus,
   saveItems,
   addItem,
+  removeItem,
+  clearItems,
+  updateItemStatus,
 };

@@ -5,8 +5,9 @@ import { Trash2 } from "lucide-react-native";
 import styles from "./styles";
 
 type ItemData = {
-  description: string;
+  id: string;
   status: FilterStatus;
+  description: string;
 };
 type ItemProps = {
   data: ItemData;
@@ -20,6 +21,7 @@ export function Item({ data, onRemove, onStatusChange }: ItemProps) {
       <TouchableOpacity activeOpacity={0.8} onPress={onStatusChange}>
         <StatusIcon status={data.status} />
       </TouchableOpacity>
+
       <Text style={styles.description}>{data.description}</Text>
 
       <TouchableOpacity activeOpacity={0.8} onPress={onRemove}>
